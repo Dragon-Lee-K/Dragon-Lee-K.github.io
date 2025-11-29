@@ -50,7 +50,40 @@
     <div class="textthree">
         <h1 style="white-space: nowrap;">无论我望向宇宙的哪个角落，都能看到你的影子</h1>
     </div>
-    <audio src="video/哪里都是你.mp3" autoplay loop></audio>
+
+    <!-- 添加一个简单的播放按钮 -->
+    <div id="musicPlayer" style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        background: rgba(255,255,255,0.2);
+        padding: 10px;
+        border-radius: 20px;
+        cursor: pointer;
+        color: white;
+        font-family: 楷体;
+    ">
+        🎵 点击开启音乐
+    </div>
+
+    <script>
+    // 音频元素
+    const bgMusic = new Audio('video/哪里都是你.mp3');
+    bgMusic.loop = true;
+
+    // 点击后播放
+    document.getElementById('musicPlayer').addEventListener('click', function() {
+        bgMusic.play().then(() => {
+            this.innerHTML = '🎵 音乐播放中';
+            this.style.background = 'rgba(255,255,255,0.3)';
+        }).catch(error => {
+            console.log('播放失败:', error);
+        });
+    });
+    </script>
+
+    <!-- <audio src="video/哪里都是你.mp3" autoplay loop></audio> -->
     
     <div class="container"></div>
     <script src="js/skystar.js"></script>
