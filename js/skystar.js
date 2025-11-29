@@ -21,7 +21,7 @@ for (let i = 1; i <= totalImages; i++) {
 function initPhotos() {
     let container = document.querySelector('.container');
     let activePhotos = [];
-    const maxConcurrent = 5;
+    const maxConcurrent = 7;
 
     function createRandomPhoto() {
         if (activePhotos.length >= maxConcurrent) {
@@ -82,13 +82,13 @@ function initPhotos() {
         }, 10);
         
         // 显示时间
-        const displayTime = randomNum(2000, 3000);
+        const displayTime = randomNum(3000, 4000);
         setTimeout(() => {
             fadeOutPhoto(photo_box);
         }, displayTime);
         
         // 下一张
-        const nextDelay = randomNum(500, 1000);
+        const nextDelay = randomNum(1000, 1500);
         setTimeout(createRandomPhoto, nextDelay);
     }
     
@@ -105,8 +105,8 @@ function initPhotos() {
         const maxTop = viewportHeight - imgHeight - 10; // 留出10px边距
         
         // 在全屏范围内随机位置
-        const left = randomNum(-1100, 1000);
-        const top = randomNum(-350, 300);
+        const left = randomNum(-1050, 950);
+        const top = randomNum(-330, 300);
         
         console.log(`图片位置: left=${left}, top=${top}, 视口: ${viewportWidth}x${viewportHeight}`); // 调试用
         
@@ -275,28 +275,46 @@ let textone = document.querySelector('.textone').querySelector('h1');
       let textthree = document.querySelector('.textthree').querySelector('h1');
 
       setTimeout(function(){
-        textone.innerHTML = '好好好好好(●ˇ∀ˇ●)';
+        textone.innerHTML = '这片星空视频是我们的见证';
           textone.style.color = '#E8F9FD';
           textone.style.fontFamily = '楷体'
           textone.style.zIndex = '1000'; // 添加这行
           textone.style.position = 'relative'; // 确保 z-index 生效
 
+        texttwo.innerHTML = '见证着我想把整个宇宙的浪漫都送给你的心意';
           texttwo.style.color = '#E8F9FD';
           texttwo.style.fontFamily = '楷体'
           textone.style.zIndex = '1000'; // 添加这行
           textone.style.position = 'relative'; // 确保 z-index 生效
 
+        textthree.innerHTML = '而这首歌，在我每一个想你的白天，每一个想你的夜晚，都会轻轻响起';
           textthree.style.color = '#E8F9FD';
           textthree.style.fontFamily = '楷体'
           textone.style.zIndex = '1000'; // 添加这行
           textone.style.position = 'relative'; // 确保 z-index 生效
-          texttwo.innerHTML = '';
-          textthree.innerHTML = '';
+
+        // 添加不换行样式
+        [textone, texttwo, textthree].forEach(text => {
+            text.style.whiteSpace = 'nowrap';
+            text.style.overflow = 'hidden';
+            text.style.textOverflow = 'ellipsis';
+            text.style.fontSize = '22px'; // 根据需要调整
+        });
+          
+          
       },20000)
       setTimeout(function(){
-        textone.innerHTML = '夏日灿烂，愿你被这世界温柔以待';
-        texttwo.innerHTML = '夜空璀璨，祝你一路总有星辰相伴';
-        textthree.innerHTML = '前路漫漫，许你初心不变仍是少年';
+        textone.innerHTML = '也许我无法真的摘下星星送给你';
+        texttwo.innerHTML = '但我想让你知道——在我的世界里，你比任何星辰都要耀眼';
+        textthree.innerHTML = '哪里都是你，因为我的目光所及，心之所向，全都是你';
+
+        // 添加不换行样式
+        [textone, texttwo, textthree].forEach(text => {
+            text.style.whiteSpace = 'nowrap';
+            text.style.overflow = 'hidden';
+            text.style.textOverflow = 'ellipsis';
+            text.style.fontSize = '22px'; // 根据需要调整
+        });
       },40000)
 
 
