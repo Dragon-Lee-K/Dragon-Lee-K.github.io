@@ -60,3 +60,38 @@ animation-delay: var(--animation-delay);
     }
     
 }
+.photo-box {
+    pointer-events: auto; /* 允许点击 */
+    transition: transform 0.3s ease;
+}
+
+.photo-box:hover {
+    transform: scale(1.05) rotate(0deg) !important;
+    z-index: 10 !important;
+}
+
+.photo {
+    filter: brightness(0.95) contrast(1.1);
+    transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.photo:hover {
+    filter: brightness(1.05) contrast(1.2);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5) !important;
+}
+
+/* 确保文字容器有较高的 z-index */
+.container {
+    position: relative;
+    z-index: 100;
+}
+
+/* 确保文字在图片上面 */
+.word-box {
+    z-index: 100; /* 设置较高的 z-index */
+    position: relative; /* 确保 z-index 生效 */
+}
+
+.photo-box {
+    z-index: 1; /* 设置较低的 z-index */
+}

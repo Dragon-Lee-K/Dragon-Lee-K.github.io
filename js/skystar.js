@@ -1,3 +1,155 @@
+// // 添加照片数组（替换为你的实际照片路径）
+// var photos = [
+//     'images/imag1.jpg',
+//     'images/imag2.jpg',
+//     'images/imag3.jpg',
+//     'images/imag4.jpg',
+//     'images/imag5.jpg',
+//     'images/imag6.jpg',
+//     // 添加更多照片路径...
+// ];
+
+// 自动生成图片路径数组
+var photos = [];
+var totalImages = 99; // 你的图片总数
+
+for (let i = 1; i <= totalImages; i++) {
+    photos.push(`images/image${i}.jpg`);
+}
+
+// 随机照片功能
+function initPhotos() {
+    let container = document.querySelector('.container');
+    let activePhotos = [];
+    const maxConcurrent = 5;
+
+    function createRandomPhoto() {
+        if (activePhotos.length >= maxConcurrent) {
+            removeOldestPhoto();
+        }
+        
+        let randomIndex = Math.floor(Math.random() * photos.length);
+        let photoPath = photos[randomIndex];
+        
+        let photo_box = document.createElement('div');
+        let photo = document.createElement('img');
+        
+        photo.src = photoPath;
+        photo.alt = "美好回忆";
+        
+        // 图片尺寸和样式
+        const imgWidth = randomNum(100, 180);
+        Object.assign(photo.style, {
+            width: imgWidth + 'px',
+            height: 'auto',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+            opacity: '0',
+            transition: 'all 0.8s ease-in-out',
+            transform: 'scale(0.9)'
+        });
+        
+        // 修复：正确的全屏随机位置
+        const position = calculateRandomPosition(imgWidth);
+        Object.assign(photo_box.style, {
+            position: 'fixed', // 改为 fixed 确保相对于视口定位
+            top: position.top + 'px',
+            left: position.left + 'px',
+            zIndex: 1
+        });
+        // // 移除 z-index 设置，让 CSS 控制层级
+        // Object.assign(photo_box.style, {
+        //     position: 'fixed',
+        //     top: randomNum(5, 85) + 'vh',
+        //     left: randomNum(5, 85) + 'vw',
+        //     transform: 'translate(-50%, -50%)'
+        //     // 不再设置 z-index
+        // });
+
+        
+        
+        photo_box.appendChild(photo);
+        container.appendChild(photo_box);
+        activePhotos.push({
+            element: photo_box,
+            timestamp: Date.now()
+        });
+        
+        // 快速淡入
+        setTimeout(() => {
+            photo.style.opacity = '0.9';
+            photo.style.transform = 'scale(1)';
+        }, 10);
+        
+        // 显示时间
+        const displayTime = randomNum(2000, 3000);
+        setTimeout(() => {
+            fadeOutPhoto(photo_box);
+        }, displayTime);
+        
+        // 下一张
+        const nextDelay = randomNum(500, 1000);
+        setTimeout(createRandomPhoto, nextDelay);
+    }
+    
+    // 修复：正确的全屏随机位置计算
+    function calculateRandomPosition(imgWidth) {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // 估算图片高度（假设宽高比约为 4:3）
+        const imgHeight = (imgWidth * 0.75);
+        
+        // 计算可用的随机范围（确保图片完全在视口内）
+        const maxLeft = viewportWidth - imgWidth - 10;  // 留出10px边距
+        const maxTop = viewportHeight - imgHeight - 10; // 留出10px边距
+        
+        // 在全屏范围内随机位置
+        const left = randomNum(-1100, 1000);
+        const top = randomNum(-350, 300);
+        
+        console.log(`图片位置: left=${left}, top=${top}, 视口: ${viewportWidth}x${viewportHeight}`); // 调试用
+        
+        return { left, top };
+    }
+    
+    function fadeOutPhoto(photoBox) {
+        let img = photoBox.querySelector('img');
+        if (img) {
+            img.style.opacity = '0';
+            img.style.transform = 'scale(0.8)';
+        }
+        
+        setTimeout(() => {
+            if (photoBox.parentNode) {
+                photoBox.parentNode.removeChild(photoBox);
+                activePhotos = activePhotos.filter(p => p.element !== photoBox);
+            }
+        }, 800);
+    }
+    
+    function removeOldestPhoto() {
+        if (activePhotos.length > 0) {
+            let oldest = activePhotos.reduce((prev, current) => 
+                prev.timestamp < current.timestamp ? prev : current
+            );
+            fadeOutPhoto(oldest.element);
+        }
+    }
+    
+    // 立即启动
+    createRandomPhoto();
+    setTimeout(createRandomPhoto, 300);
+    setTimeout(createRandomPhoto, 600);
+}
+
+// 确保randomNum返回整数
+function randomNum(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // poem
 var words=[
     '伤心桥下春波绿',
@@ -78,7 +230,11 @@ function randomNum(min,max){
 function init(){
     let container = document.querySelector('.container');
     let f = document.createDocumentFragment();
-    words.forEach(w=>{
+
+    // 计算每个文字的垂直位置，确保均匀分布
+    const verticalStep = 60 / words.length;
+
+    words.forEach((w,index)=>{
     let word_box = document.createElement('div');
     let word = document.createElement('div');
         word.innerText = w;
@@ -86,8 +242,16 @@ function init(){
         word.style.color = '#BAABDA';
         word.style.fontFamily = '楷体';
         word.style.fontSize = '20px'
+
+        // // 添加竖排文字样式
+        // word.style.writingMode = 'horizontal-lr'; // 竖排，从右往左
+        // word.style.textOrientation = 'upright'; // 保持文字直立
+        // word.style.letterSpacing = '10px'; // 字间距
+        // word.style.lineHeight = '1.5'; // 行高
+
         word_box.classList.add('word-box');
-        word_box.style.setProperty("--margin-top",randomNum(-40,20)+'vh');
+        // word_box.style.setProperty("--margin-top",randomNum(-40,20)+'vh');
+        word_box.style.setProperty("--margin-top", (verticalStep * index) + 'vh');
         word_box.style.setProperty("--margin-left",randomNum(6,35)+'vw');
         word_box.style.setProperty("--animation-duration",randomNum(12,20)+'s');
         word_box.style.setProperty("--animation-delay",randomNum(-20,0)+'s');
@@ -99,20 +263,35 @@ function init(){
     })
     container.appendChild(f);
 }
-window.addEventListener('load',init);
+// window.addEventListener('load',init);
+// 在页面加载时同时初始化文字和照片
+window.addEventListener('load', function() {
+    init(); // 你的原有文字初始化
+    initPhotos(); // 新增加的照片初始化
+});
+
 let textone = document.querySelector('.textone').querySelector('h1');
       let texttwo = document.querySelector('.texttwo').querySelector('h1');
       let textthree = document.querySelector('.textthree').querySelector('h1');
 
       setTimeout(function(){
-        textone.innerHTML = '加二的三三，忙碌的昨天辛苦啦！(●ˇ∀ˇ●)';
+        textone.innerHTML = '好好好好好(●ˇ∀ˇ●)';
           textone.style.color = '#E8F9FD';
           textone.style.fontFamily = '楷体'
+          textone.style.zIndex = '1000'; // 添加这行
+          textone.style.position = 'relative'; // 确保 z-index 生效
+
           texttwo.style.color = '#E8F9FD';
           texttwo.style.fontFamily = '楷体'
+          textone.style.zIndex = '1000'; // 添加这行
+          textone.style.position = 'relative'; // 确保 z-index 生效
+
           textthree.style.color = '#E8F9FD';
           textthree.style.fontFamily = '楷体'
+          textone.style.zIndex = '1000'; // 添加这行
+          textone.style.position = 'relative'; // 确保 z-index 生效
           texttwo.innerHTML = '';
+          textthree.innerHTML = '';
       },20000)
       setTimeout(function(){
         textone.innerHTML = '夏日灿烂，愿你被这世界温柔以待';
